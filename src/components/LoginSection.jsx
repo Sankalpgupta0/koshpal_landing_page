@@ -8,20 +8,12 @@ const LoginSection = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [role, setRole] = useState('EMPLOYEE');
+  const [rememberMe, setRememberMe] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [emailError, setEmailError] = useState('');
   const [passwordError, setPasswordError] = useState('');
-
-  // Common email providers that should be blocked
-  const commonEmailProviders = [
-    'gmail.com', 'yahoo.com', 'outlook.com', 'hotmail.com', 'live.com',
-    'aol.com', 'icloud.com', 'mail.com', 'protonmail.com', 'zoho.com',
-    'yandex.com', 'gmx.com', 'inbox.com', 'me.com', 'msn.com'
-  ];
-
-  // Validate work email
   const validateEmail = (email) => {
     if (!email) {
       setEmailError('Email is required');
@@ -31,11 +23,6 @@ const LoginSection = () => {
     const emailDomain = email.split('@')[1]?.toLowerCase();
     if (!emailDomain) {
       setEmailError('Please enter a valid email address');
-      return false;
-    }
-    
-    if (commonEmailProviders.includes(emailDomain)) {
-      setEmailError('Please use your work email address. Personal email providers are not allowed.');
       return false;
     }
     
@@ -220,7 +207,7 @@ const LoginSection = () => {
                 letterSpacing: '0.04em',
                 color: '#262626'
               }}>
-                WORK EMAIL
+                EMAIL ADDRESS
               </label>
               <div className="relative">
                 <Mail className="absolute transform -translate-y-1/2 left-3 top-1/2" style={{ 
@@ -247,7 +234,7 @@ const LoginSection = () => {
                     backgroundColor: '#f5f5f5',
                     border: emailError ? '1px solid #d5332a' : '1px solid #e0e0e0'
                   }}
-                  placeholder="you@company.com"
+                  placeholder="Enter your email"
                   required
                   onFocus={(e) => {
                     e.target.style.backgroundColor = '#ffffff';
