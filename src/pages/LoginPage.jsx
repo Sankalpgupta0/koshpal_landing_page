@@ -21,9 +21,15 @@ const LoginPage = () => {
       try {
         const response = await axios.get(`${API_URL}/auth/me`, { withCredentials: true });
         if (response.data && response.data.role) {
-          // Determine redirect URL based on role
-          // Using production URLs as fallback, but favoring logic that matches the backend's redirect map
-          const portalMap = {
+          // Determine redirect URL based on current environment (local vs prod)
+          const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+          
+          const portalMap = isLocalhost ? {
+            EMPLOYEE: 'http://localhost:5174',
+            HR: 'http://localhost:5175',
+            COACH: 'http://localhost:5176',
+            ADMIN: 'http://localhost:5173',
+          } : {
             EMPLOYEE: 'https://employee.koshpal.com',
             HR: 'https://hr.koshpal.com',
             COACH: 'https://coach.koshpal.com',
@@ -31,7 +37,7 @@ const LoginPage = () => {
           };
           
           const role = response.data.role;
-          const redirectUrl = portalMap[role] || 'http://localhost:5173';
+          const redirectUrl = portalMap[role] || (isLocalhost ? 'http://localhost:5173' : 'https://koshpal.com');
           
           window.location.href = redirectUrl;
         }
