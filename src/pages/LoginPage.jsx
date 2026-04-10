@@ -24,10 +24,10 @@ const LoginPage = () => {
           // Determine redirect URL based on role
           // Using production URLs as fallback, but favoring logic that matches the backend's redirect map
           const portalMap = {
-            EMPLOYEE: 'http://localhost:5174',
-            HR: 'http://localhost:5175',
-            COACH: 'http://localhost:5176',
-            ADMIN: 'http://localhost:5173',
+            EMPLOYEE: 'https://employee.koshpal.com',
+            HR: 'https://hr.koshpal.com',
+            COACH: 'https://coach.koshpal.com',
+            ADMIN: 'https://admin.koshpal.com',
           };
           
           const role = response.data.role;

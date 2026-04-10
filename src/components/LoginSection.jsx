@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Mail, Lock, Eye, EyeOff, ArrowRight } from 'lucide-react';
 import axios from 'axios';
 
@@ -14,6 +14,33 @@ const LoginSection = () => {
   const [error, setError] = useState('');
   const [emailError, setEmailError] = useState('');
   const [passwordError, setPasswordError] = useState('');
+
+  // Check if user is already logged in
+  useEffect(() => {
+    const checkAuth = async () => {
+      try {
+        const response = await axios.get(`${API_URL}/auth/me`, { withCredentials: true });
+        if (response.data && response.data.role) {
+          const portalMap = {
+            EMPLOYEE: 'http://localhost:5174',
+            HR: 'http://localhost:5175',
+            COACH: 'http://localhost:5176',
+            ADMIN: 'http://localhost:5173',
+          };
+          
+          const role = response.data.role;
+          const redirectUrl = portalMap[role] || 'http://localhost:5173';
+          window.location.href = redirectUrl;
+        }
+      } catch (err) {
+        // Not logged in
+        console.log('User not logged in or session expired');
+      }
+    };
+
+    checkAuth();
+  }, []);
+
   const validateEmail = (email) => {
     if (!email) {
       setEmailError('Email is required');
@@ -90,21 +117,7 @@ const LoginSection = () => {
       // Redirect to the portal on success
       window.location.href = response.data.redirectUrl;
     } catch (err) {
-      // On failure, redirect to the login page
-      const portalMap = {
-        EMPLOYEE: 'https://employee.koshpal.com/login',
-        HR: 'https://hr.koshpal.com/login',
-        COACH: 'https://coach.koshpal.com/login',
-        ADMIN: 'https://admin.koshpal.com/login',
-      };
-      
-      setError(err.response?.data?.message || 'Authentication failed. Redirecting to login page...');
-      
-      // Redirect to portal login page after 2 seconds
-      setTimeout(() => {
-        window.location.href = portalMap[role] || 'https://koshpal.com/login';
-      }, 2000);
-      
+      setError(err.response?.data?.message || 'Authentication failed. Please check your credentials.');
       setLoading(false);
     }
   };
