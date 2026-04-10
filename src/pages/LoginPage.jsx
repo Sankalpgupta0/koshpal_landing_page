@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Mail, Lock, Eye, EyeOff } from 'lucide-react';
 import axios from 'axios';
 
@@ -14,6 +14,36 @@ const LoginPage = () => {
   const [error, setError] = useState('');
   const [emailError, setEmailError] = useState('');
   const [passwordError, setPasswordError] = useState('');
+
+  // Check if user is already logged in
+  useEffect(() => {
+    const checkAuth = async () => {
+      try {
+        const response = await axios.get(`${API_URL}/auth/me`, { withCredentials: true });
+        if (response.data && response.data.role) {
+          // Determine redirect URL based on role
+          // Using production URLs as fallback, but favoring logic that matches the backend's redirect map
+          const portalMap = {
+            EMPLOYEE: 'http://localhost:5174',
+            HR: 'http://localhost:5175',
+            COACH: 'http://localhost:5176',
+            ADMIN: 'http://localhost:5173',
+          };
+          
+          const role = response.data.role;
+          const redirectUrl = portalMap[role] || 'http://localhost:5173';
+          
+          window.location.href = redirectUrl;
+        }
+      } catch (err) {
+        // Not logged in, continue to show login form
+        console.log('User not logged in or session expired');
+      }
+    };
+
+    checkAuth();
+  }, []);
+
   const validateEmail = (email) => {
     if (!email) {
       setEmailError('Email is required');
