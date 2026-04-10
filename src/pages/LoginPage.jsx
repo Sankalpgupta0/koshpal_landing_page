@@ -24,12 +24,7 @@ const LoginPage = () => {
           // Determine redirect URL based on current environment (local vs prod)
           const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
           
-          const portalMap = isLocalhost ? {
-            EMPLOYEE: 'http://localhost:5174',
-            HR: 'http://localhost:5175',
-            COACH: 'http://localhost:5176',
-            ADMIN: 'http://localhost:5173',
-          } : {
+          const portalMap = {
             EMPLOYEE: 'https://employee.koshpal.com',
             HR: 'https://hr.koshpal.com',
             COACH: 'https://coach.koshpal.com',
